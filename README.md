@@ -5,7 +5,7 @@
 Our core idea is to view autoregressive translation as a **source–prefix balance** problem. The source provides a fixed, spatially aligned anatomical anchor, while the generated target prefix provides evolving target-side context. Instead of always using the full prefix correction, SPIRA learns how much of that correction should be retained for each target region.
 
 <p align="center">
-  <img src="assets/teaser" alt="SPIRA teaser" width="800">
+  <img src="assets/teaser.png" alt="SPIRA teaser" width="800">
 </p>
 
 SPIRA follows three simple ideas:
@@ -23,7 +23,7 @@ In source-conditioned autoregressive translation, the source volume already prov
 SPIRA explicitly models this difference and performs **token-wise selective prefix retraction**.
 
 <p align="center">
-  <img src="assets/framework" alt="SPIRA framework" width="800">
+  <img src="assets/framework.png" alt="SPIRA framework" width="800">
 </p>
 
 ## 💡 Key Ideas

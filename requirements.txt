@@ -1,0 +1,13 @@
+# Install the PyTorch wheel appropriate for your CPU/CUDA environment first.
+torch==2.7.1
+numpy==1.26.4
+monai==1.4.0
+nibabel==5.3.2
+PyYAML==6.0.2
+tqdm==4.67.1
+einops==0.8.1
+omegaconf==2.3.0
+lightning==2.6.4
+beartype==0.22.9
+rich==14.1.0
+safetensors==0.6.2

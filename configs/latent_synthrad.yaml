@@ -1,0 +1,18 @@
+data:
+  dataset: SynthRAD
+  modalities:
+  - CT
+  - MRI
+  - CBCT
+  orientation: RAS
+  normalization:
+    type: modality_specific
+    percentile_low: 0.5
+    percentile_high: 99.5
+  data_root: data/synthrad
+  train_datalist: data/synthrad/train.json
+  val_datalist: data/synthrad/val.json
+vidtok:
+  repo_root: third_party/VidTok
+  config_path: configs/vidtok_fsq.yaml
+  ckpt_path: weights/vidtok_fsq.ckpt

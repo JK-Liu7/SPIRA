@@ -1,0 +1,40 @@
+model:
+  target: vidtok.models.autoencoder.AutoencodingEngine
+  params:
+    encoder_config:
+      target: vidtok.modules.model_3dnoncausal.Encoder3D
+      params:
+        double_z: false
+        z_channels: 6
+        in_channels: 3
+        out_ch: 3
+        ch: 128
+        ch_mult:
+        - 1
+        - 2
+        - 4
+        - 4
+        time_downsample_factor: 4
+        num_res_blocks: 2
+        dropout: 0.0
+        use_checkpoint: false
+        norm_type: layernorm
+        fix_encoder: false
+        fix_decoder: false
+    decoder_config:
+      target: vidtok.modules.model_3dnoncausal.Decoder3D
+      params: ${model.params.encoder_config.params}
+    regularizer_config:
+      target: vidtok.modules.regularizers.FSQRegularizer
+      params:
+        levels:
+        - 8
+        - 8
+        - 8
+        - 8
+        - 8
+        - 8
+        entropy_loss_weight: 0.1
+        entropy_loss_annealing_steps: 2000
+        entropy_loss_annealing_factor: 3
+        commitment_loss_weight: 0.25

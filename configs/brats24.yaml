@@ -1,0 +1,151 @@
+experiment:
+  name: spira
+  seed: 42
+  output_dir: outputs/{dataset}/{source_modality}_to_{target_modality}
+data:
+  dataset: brats24
+  latent_root: latents/{dataset}
+  train_manifest: latents/{dataset}/manifest_{dataset}_train.jsonl
+  val_manifest: latents/{dataset}/manifest_{dataset}_val.jsonl
+  persistent_cache_dir: cache/{dataset}
+  latent_crop_size:
+  - 32
+  - 32
+  - 32
+  min_valid_ratio: 0.9
+  max_crop_tries: 100
+  source_modality: t1n
+  target_modality: t1c
+augmentation:
+  enabled: true
+  rand_flip:
+    enabled: true
+    prob_per_axis:
+      D: 0.5
+      H: 0.5
+      W: 0.5
+  rand_rotate90:
+    enabled: true
+    prob: 0.2
+    axes:
+    - H
+    - W
+    max_k: 3
+vidtok:
+  levels_json: latents/{dataset}/fsq_levels.json
+model:
+  backbone: spira
+  hidden_dim: 512
+  num_layers: 12
+  num_heads: 8
+  mlp_ratio: 4.0
+  latent_shape:
+  - 32
+  - 32
+  - 32
+  block_size:
+  - 4
+  - 4
+  - 4
+  order: raster_dhw
+  source_conditioned_bov:
+    enabled: true
+  target_history:
+    mode: block_summary
+  intra_block_biattn:
+    num_layers: 1
+    num_heads: 8
+  source_encoder:
+    local_num_layers: 1
+    local_num_heads: 8
+    global_num_layers: 2
+    global_num_heads: 8
+    relative_3d_position_bias: true
+  next_block_predictor:
+    local_decoder_num_layers: 1
+    local_decoder_num_heads: 8
+    current_token_gate:
+      enabled: true
+      learnable: true
+      activation: sigmoid
+      init: 0.5
+  fsq_factorized_head:
+    label_smoothing: 0.01
+    ordinal_loss:
+      enabled: true
+      type: l1
+      weight: 5.0
+train:
+  precision: bf16
+  batch_size_per_gpu: 2
+  grad_accum_steps: 1
+  num_workers: 8
+  lr: 0.0001
+  min_lr: 2.0e-06
+  weight_decay: 0.05
+  betas:
+  - 0.9
+  - 0.95
+  eps: 1.0e-08
+  gate_optimizer:
+    lr_multiplier: 3.0
+    min_lr_multiplier: 3.0
+    weight_decay: 0.01
+  scheduler: warmup_cosine
+  warmup_steps: 3000
+  max_steps: 80000
+  grad_clip: 3.0
+  gradient_checkpointing: false
+  dropout:
+    resid: 0.05
+  ema:
+    enabled: true
+    decay: 0.999
+    start_step: 1000
+    use_for_validation: true
+  optimizer_param_groups:
+    strategy: name_module
+    no_decay_bias: true
+    no_decay_norm: true
+    no_decay_embedding: true
+    no_decay_name_patterns:
+    - intra_pos
+    - bov_position
+    - summary_pool.queries
+spira:
+  enabled: true
+  gate:
+    version: v2
+    hidden_dim: 128
+validation:
+  val_every_steps: 4000
+  save_every_steps: 4000
+  batch_size_per_gpu: 12
+  num_workers: 8
+  free_running:
+    enabled: true
+    every_steps: 4000
+    order: raster_dhw
+    greedy: true
+    temperature: 1.0
+    use_kv_cache: true
+inference:
+  use_kv_cache: true
+  greedy: true
+  sliding_window:
+    enabled: true
+    latent_window_size:
+    - 32
+    - 32
+    - 32
+    overlap: 0.25
+    blend: gaussian
+    decode_latent_window_size:
+    - 8
+    - 32
+    - 32
+    decode_overlap: 0.25
+    decode_sw_batch_size: 2
+    decode_blend: gaussian
+    decode_precision: bf16
+    decode_sequential_model_offload: true

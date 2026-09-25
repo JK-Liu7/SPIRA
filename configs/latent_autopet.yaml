@@ -1,0 +1,17 @@
+data:
+  dataset: AutoPET
+  modalities:
+  - CT
+  - PET
+  orientation: RAS
+  normalization:
+    type: modality_specific
+    percentile_low: 0.5
+    percentile_high: 99.5
+  data_root: data/autopet
+  train_datalist: data/autopet/train.json
+  val_datalist: data/autopet/val.json
+vidtok:
+  repo_root: third_party/VidTok
+  config_path: configs/vidtok_fsq.yaml
+  ckpt_path: weights/vidtok_fsq.ckpt

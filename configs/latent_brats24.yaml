@@ -1,0 +1,23 @@
+data:
+  dataset: BraTS24
+  modalities:
+  - t1c
+  - t1n
+  - t2f
+  - t2w
+  full_spatial_size_hwd:
+  - 256
+  - 256
+  - 128
+  orientation: RAS
+  normalization:
+    type: percentile_to_minus1_1
+    percentile_low: 0.5
+    percentile_high: 99.5
+  data_root: data/brats24
+  train_datalist: data/brats24/train.json
+  val_datalist: data/brats24/val.json
+vidtok:
+  repo_root: third_party/VidTok
+  config_path: configs/vidtok_fsq.yaml
+  ckpt_path: weights/vidtok_fsq.ckpt

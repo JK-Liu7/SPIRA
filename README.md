@@ -4,6 +4,10 @@
 
 Our core idea is to view autoregressive translation as a **source–prefix balance** problem. The source provides a fixed, spatially aligned anatomical anchor, while the generated target prefix provides evolving target-side context. Instead of always using the full prefix correction, SPIRA learns how much of that correction should be retained for each target region.
 
+<p align="center">
+  <img src="assets/teaser" alt="SPIRA teaser" width="800">
+</p>
+
 SPIRA follows three simple ideas:
 
 - 🧭 **Separate source and prefix influence**, by comparing source-only and full-prefix predictions
@@ -18,11 +22,9 @@ In source-conditioned autoregressive translation, the source volume already prov
 
 SPIRA explicitly models this difference and performs **token-wise selective prefix retraction**.
 
-<!-- Add the framework figure manually, for example:
 <p align="center">
-  <img src="assets/framework.png" alt="SPIRA Framework" width="900">
+  <img src="assets/framework" alt="SPIRA framework" width="800">
 </p>
--->
 
 ## 💡 Key Ideas
 
@@ -169,17 +171,7 @@ For SynthRAD or AutoPET, replace the dataset name and latent configuration accor
 python spira_ar/train_spira.py --config configs/brats24.yaml
 ```
 
-### 3. Validate
-
-```bash
-python spira_ar/validate_spira.py \
-  --config configs/brats24.yaml \
-  --ckpt outputs/brats24/t1n_to_t1c/last.pt \
-  --use-ema \
-  --free-running
-```
-
-### 4. Full-volume inference
+### 3. Full-volume inference
 
 ```bash
 python spira_ar/infer_spira.py \
@@ -188,22 +180,3 @@ python spira_ar/infer_spira.py \
   --use-ema \
   --output-dir outputs/brats24/predictions
 ```
-
-To additionally decode the predicted latents into NIfTI volumes:
-
-```bash
-python spira_ar/infer_spira.py \
-  --config configs/brats24.yaml \
-  --ckpt outputs/brats24/t1n_to_t1c/last.pt \
-  --use-ema \
-  --output-dir outputs/brats24/decoded \
-  --decode \
-  --tokenizer-config configs/latent_brats24.yaml
-```
-
-## 📦 Repository Scope
-
-This anonymous release contains the SPIRA implementation, configuration files, example datalists, tests, and documentation.
-
-Medical datasets, experiment outputs, dataset-specific fine-tuned tokenizer weights, and trained SPIRA checkpoints are **not included**. Runtime data, outputs, weights, and third-party dependency checkouts should remain excluded from version control.
-
